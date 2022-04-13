@@ -1,73 +1,3 @@
-/* 自定义代码高亮样式 */
-
-.hljs-comment,
-.hljs-quote {
-  color: #989498
-}
-
-.hljs-variable,
-.hljs-template-variable,
-.hljs-attribute,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-link,
-.hljs-deletion {
-  color: #dd464c
-}
-
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params {
-  color: #fd8b19
-}
-
-.hljs-class .hljs-title {
-  color: #fdcc59
-}
-
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-  color: #8fc13e
-}
-
-.hljs-meta {
-  color: #149b93
-}
-
-.hljs-function,
-.hljs-section,
-.hljs-title {
-  color: #1290bf
-}
-
-.hljs-keyword,
-.hljs-selector-tag {
-  color: #c85e7c
-}
-
-.hljs {
-  display: block;
-  background: #322931;
-  color: #b9b5b8;
-  padding: 0.5em
-}
-
-.hljs-emphasis {
-  font-style: italic
-}
-
-.hljs-strong {
-  font-weight: bold
-}
-
 /* 自定义markdown样式 */
 
 @media (min-width: 768px) {
@@ -159,7 +89,6 @@
 }
 
 .markdown-body a {
-  background-color: transparent;
   background-color: initial;
 }
 
@@ -190,7 +119,6 @@
 }
 
 .markdown-body hr {
-  box-sizing: content-box;
   box-sizing: initial;
   height: 0;
   overflow: visible;
@@ -860,7 +788,6 @@
 
 .markdown-body img {
   max-width: 100%;
-  box-sizing: content-box;
   box-sizing: initial;
   background-color: #fff;
 }
@@ -922,7 +849,6 @@
   overflow: visible;
   line-height: inherit;
   word-wrap: normal;
-  background-color: transparent;
   background-color: initial;
   border: 0;
 }
@@ -1001,74 +927,62 @@
 
 .markdown-body .tab-size[data-tab-size="1"] {
   -moz-tab-size: 1;
-  -o-tab-size: 1;
-     tab-size: 1;
+  tab-size: 1;
 }
 
 .markdown-body .tab-size[data-tab-size="2"] {
   -moz-tab-size: 2;
-  -o-tab-size: 2;
-     tab-size: 2;
+  tab-size: 2;
 }
 
 .markdown-body .tab-size[data-tab-size="3"] {
   -moz-tab-size: 3;
-  -o-tab-size: 3;
-     tab-size: 3;
+  tab-size: 3;
 }
 
 .markdown-body .tab-size[data-tab-size="4"] {
   -moz-tab-size: 4;
-  -o-tab-size: 4;
-     tab-size: 4;
+  tab-size: 4;
 }
 
 .markdown-body .tab-size[data-tab-size="5"] {
   -moz-tab-size: 5;
-  -o-tab-size: 5;
-     tab-size: 5;
+  tab-size: 5;
 }
 
 .markdown-body .tab-size[data-tab-size="6"] {
   -moz-tab-size: 6;
-  -o-tab-size: 6;
-     tab-size: 6;
+  tab-size: 6;
 }
 
 .markdown-body .tab-size[data-tab-size="7"] {
   -moz-tab-size: 7;
-  -o-tab-size: 7;
-     tab-size: 7;
+  tab-size: 7;
 }
 
 .markdown-body .tab-size[data-tab-size="8"] {
   -moz-tab-size: 8;
-  -o-tab-size: 8;
-     tab-size: 8;
+  tab-size: 8;
 }
 
 .markdown-body .tab-size[data-tab-size="9"] {
   -moz-tab-size: 9;
-  -o-tab-size: 9;
-     tab-size: 9;
+  tab-size: 9;
 }
 
 .markdown-body .tab-size[data-tab-size="10"] {
   -moz-tab-size: 10;
-  -o-tab-size: 10;
-     tab-size: 10;
+  tab-size: 10;
 }
 
 .markdown-body .tab-size[data-tab-size="11"] {
   -moz-tab-size: 11;
-  -o-tab-size: 11;
-     tab-size: 11;
+  tab-size: 11;
 }
 
 .markdown-body .tab-size[data-tab-size="12"] {
   -moz-tab-size: 12;
-  -o-tab-size: 12;
-     tab-size: 12;
+  tab-size: 12;
 }
 
 .markdown-body .task-list-item {
@@ -1083,4 +997,3 @@
   margin: 0 .2em .25em -1.6em;
   vertical-align: middle;
 }
-
