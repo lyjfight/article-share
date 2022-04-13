@@ -1,4 +1,4 @@
-## devtool
+# devtool
 
 此选项控制是否生成，以及如何生成`source map`。`source map`是什么呢，在我们生产环境上，当产生报错时我们很难去定位报错的具体位置，因为生产环境下代码已经被一些babel，loader，压缩工具给丑化和压缩了，此时调试就特别困难，即使在开发环境，代码就是被编译过了的与源代码也是有很多不一致的地方。那如何让报错能够指定到对应的源文件且能准确的对应到具体的错行那行代码上，那答案就是source map，它能够将编译后的代码映射到源文件上。那如何使用source map呢，很简单，首先会根据源文件生成source map文件，我们可以通过webpack配置生成source map文件，之后在编译后的代码最后加入一行注释，指向source-map文件，注释内容为 `//# sourceMappingURL=bundle.js.map` 。浏览器会根据我们的注释，寻找soure map文件，并根据source map文件还原源代码，便于我们去调试。
 
@@ -70,13 +70,13 @@ module.exports = {
 
 下面再介绍能生成source map的选项
 
-### source-map
+## source-map
 
 会生成一个bundle.js.map的source-map文件，在打包文件bundle.js最下面会有 `//# sourceMappingURL=bundle.js.map` 这样一条注释，它会帮我们指向source-map文件。并且在浏览器中打开错误能够定位到源代码的具体报错那一行，而且那一列开始报错也给我们指定出来了。
 
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5ed9f45ea21f420d9b8e3fc599327935~tplv-k3u1fbpfcp-zoom-1.image)
 
-### eval-source-map
+## eval-source-map
 
 该选项不会生成.map文件，但是source map会以DataURL的方式添加到evel最后面，如 `//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64` 。
 
@@ -86,7 +86,7 @@ module.exports = {
 
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5be5d9d705394a7da15c620e297d5195~tplv-k3u1fbpfcp-zoom-1.image)
 
-### inline-source-map
+## inline-source-map
 
 该选项也不会生成.map文件，但是它会在打包文件bundle.js最下面以DataURL方式添加到文件最底下，如 `//# sourceMappingURL=data:application/json;charset=utf-8;base64` 。
 
@@ -96,7 +96,7 @@ module.exports = {
 
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b0c402522d1e4b35bba2ff8a0d17a401~tplv-k3u1fbpfcp-zoom-1.image)
 
-### cheap-soure-map
+## cheap-soure-map
 
 它跟source-map一样，会生成.map文件，也会在bundle.js最下面生成 `//# sourceMappingURL=bundle.js.map` 注释指向.map文件，不同的是一个低开销的生成方式，它没有列映射，因为在实际开发中我们定位到某一行就大概能分析出问题了。
 
@@ -112,17 +112,17 @@ module.exports = {
 
 因此就出现了cheap-module-source-map配置。
 
-### cheap-module-source-map
+## cheap-module-source-map
 
 该选择与cheap-source-map的区别是它会对使用loader的soucre map处理更好。我们还是使用babel-loader处理。重新打包后定位到报错位置可以看到现在报错位置和源码所在位置以完全符合。
 
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4f29dd1aa806450b84f18ef629610ee3~tplv-k3u1fbpfcp-zoom-1.image)
 
-### hidden-source-map
+## hidden-source-map
 
 该选项会生成source map文件，但是在bundle.js文件最下面 `//# sourceMappingURL=bundle.js.map` 这条注释会被删除，这时就引用不了source map文件，如果在bundle.js下面手动添加上面这条注释，就又会生效。
 
-### nosources-source-map
+## nosources-source-map
 
 该选项会生成source map，在打包文件bundle.js下面也会有添加url注释，但是和source-map不同的是，bundle.js.map文件缺少了sourceContent属性
 

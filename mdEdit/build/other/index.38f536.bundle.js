@@ -1,0 +1,1 @@
+!function(){"use strict";var e=document.createElement("div");e.className="markdown-body",e.innerHTML='<h1 id="other">other</h1>\n',document.body.appendChild(e)}();
