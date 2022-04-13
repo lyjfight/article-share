@@ -1,6 +1,8 @@
 # devtool
 
-此选项控制是否生成，以及如何生成`source map`。`source map`是什么呢，在我们生产环境上，当产生报错时我们很难去定位报错的具体位置，因为生产环境下代码已经被一些babel，loader，压缩工具给丑化和压缩了，此时调试就特别困难，即使在开发环境，代码就是被编译过了的与源代码也是有很多不一致的地方。那如何让报错能够指定到对应的源文件且能准确的对应到具体的错行那行代码上，那答案就是source map，它能够将编译后的代码映射到源文件上。那如何使用source map呢，很简单，首先会根据源文件生成source map文件，我们可以通过webpack配置生成source map文件，之后在编译后的代码最后加入一行注释，指向source-map文件，注释内容为 `//# sourceMappingURL=bundle.js.map` 。浏览器会根据我们的注释，寻找soure map文件，并根据source map文件还原源代码，便于我们去调试。
+Source Map是一种存储了源代码和编译后代码映射关系的信息文件，包含代码转换前后的位置信息，就是比如在我们生产环境上，当产生报错时我们很难去定位报错的具体位置，因为生产环境下代码已经被一些babel，loader，压缩工具给丑化和压缩了，此时调试就特别困难，即使在开发环境，代码就是被编译过了的与源代码也是有很多不一致的地方。我们可以通过webpack配置生成source map文件，正常webpack启用sourceMap功能后打包之后在编译后的代码最后加入一行注释，指向source-map文件，注释内容为 `//# sourceMappingURL=bundle.js.map` 。浏览器会根据我们的注释，寻找soure map文件，并根据source map文件还原源代码，便于我们去调试。
+
+![Snipaste_2022-04-13_17-48-18.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e5bdfa5b19224096830c0713e397b4aa~tplv-k3u1fbpfcp-watermark.image?)
 
 在我们浏览器中读取soure map功能是默认开启的，在chrome中，在如下图位置开启
 
@@ -54,7 +56,7 @@ module.exports = {
 
 -   `version`: 当前使用的版本，也是最新的第三版
 -   `sources`: 从哪些文件转换过来的source-map和打包的代码(最初始的文件)
--   `names`: 转换前的变量和属性名称(如果使用的是development模式，就为空数组，也就不需要保留转换前的名称
+-   `names`: 转换的变量和属性名称
 -   `mappings`: source-map用来和源文件映射的信息(比如位置信息等)，一串base64 VLQ(veriable- length quantity可变长度值)编码
 -   `file`: 打包后的文件(浏览器加载的文件)
 -   `sourceContent`: 转换前的具体代码信息(和sources是对应的关系)
