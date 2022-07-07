@@ -10,4 +10,3 @@ div.innerHTML = mdContent
 document.body.appendChild(div)
 
 import '@/js/directory.js'
-

@@ -1,0 +1,47 @@
+.directoryContent {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  max-width: 240px;
+  max-height: 500px;
+  box-shadow: 0 1px 2px -2px #00000010, 0 3px 6px #00000010, 0 5px 12px 4px #00000010;
+  overflow: auto;
+  background-color: #fff;
+}
+.directoryContent::before {
+  display: block;
+  content: '';
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(250, 250, 250, 1);
+}
+.directoryContent:hover {
+  width: auto;
+  height: 500px;
+  border-radius: 0;
+}
+.directoryContent:hover::before {
+  display: none;
+}
+.directoryContent > .directoryItem {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: block;
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+}
+.directoryContent > .directoryItem.checked {
+  background-color: rgba(240, 240, 240, 1);
+}
+.directoryContent > .directoryItem:hover {
+  background-color: rgba(240, 240, 240, 1);
+  transition: all .3s;
+}
