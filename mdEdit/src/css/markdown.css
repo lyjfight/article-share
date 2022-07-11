@@ -10,6 +10,12 @@
   }
 }
 
+.markdown-body {
+  height: 100vh;
+  scroll-behavior: smooth;
+  overflow: auto;
+}
+
 .markdown-body .octicon {
   display: inline-block;
   fill: currentColor;

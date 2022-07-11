@@ -3,4 +3,5 @@
 **当前包含目录**
 
 - **`sourceMap`**
+- **`tsBase`**
 - **`other`**
