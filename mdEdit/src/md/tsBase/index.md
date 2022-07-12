@@ -730,14 +730,409 @@ const point: Point = { x: 1, y: 2 };
 ```
 
 
-
-
-
 ## 九、TypeScript 类
+
+### 9.1 类的属性与方法
+
+在 TypeScript 中，我们可以通过 `Class` 关键字来定义一个类:
+
+```ts
+class Greeter {
+  // 静态属性
+  static cname: string = "Greeter"; 
+  // 成员属性
+  greeting: string;
+ 
+  // 构造函数 - 执行初始化操作 
+  constructor(message: string) {
+    this.greeting = message;
+  }
+  // 静态方法
+  static getClassName() {
+    return "Class name is Greeter";
+  }
+  // 成员方法 
+  greet() {
+    return "Hello, " + this.greeting;
+  }
+}
+let greeter = new Greeter("world");
+```
+
+那么成员属性与静态属性，成员方法与静态方法有什么区别:
+
+```js
+"use strict";
+var Greeter = /** @class */ (function () {
+  // 构造函数 - 执行初始化操作 
+  function Greeter(message) {
+    this.greeting = message;
+  }
+  // 静态方法
+  Greeter.getClassName = function () {
+    return "Class name is Greeter";
+  };
+  // 成员方法
+  Greeter.prototype.greet = function () {
+    return "Hello, " + this.greeting;
+  };
+  // 静态属性
+  Greeter.cname = "Greeter"; 
+  return Greeter;
+}());
+var greeter = new Greeter("world");
+```
+
+### 9.2 成员修饰符
+
+Typescript中成员修饰符包含 `public` 、`private` 、`protected`
+
+`public` 定义类的变量默认就是公共的，继承的子类可以通过this来访问
+
+`private` 定义类的私有属性，只能在内部访问
+
+```ts
+class Person {
+  private name: string = ""
+  getName() {
+    return this.name
+  }
+
+  setName(newName) {
+    this.name = newName
+  }
+}
+const p = new Person()
+console.log(p.getName())
+p.setName('xbj')
+console.log(p.name) // Property 'name' is private and only accessible within class 'Person'.
+```
+
+`protected` 在类的内部和子类中可以访问,在外面就访问不到了
+
+```ts
+class Person {
+  protected name: string
+  constructor(name: string) {
+    this.name = name
+  }
+}
+
+class Student extends Person {
+  constructor(name: string, age: number){
+    super(name)
+  }
+  getName() {
+    return this.name
+  }
+}
+```
+
+### 9.3 访问器
+
+在 TypeScript 中，我们可以通过 `getter` 和 `setter` 方法来实现数据的封装和有效性校验，防止出现异常数据。
+
+```ts
+class Employee {
+  private _fullName: string;
+  get fullName(): string {
+    return this._fullName;
+  }
+  set fullName(newName: string) {
+    this._fullName = newName;
+  } 
+}
+let employee = new Employee();
+employee.fullName = "Semlinker";
+console.log(employee.fullName);
+```
+
+### 9.4 类的继承
+
+继承(Inheritance)是一种联结类与类的层次模型。指的是一个类(称为子类、子接口)继承另外的一个类(称为父类、父接口)的功能，并可以增加它自己的新功能的能力，继承是类与类或者接口与接口之间最常⻅的关系。
+继承是一种 is-a 关系:
+
+<img width="472" alt="image" style="margin: 20px auto;display: block;" src="https://user-images.githubusercontent.com/40552704/178437878-784762f9-cf07-484c-be28-140964a20bd8.png">
+
+在 TypeScript 中，我们可以通过 `extends` 关键字来实现继承:
+
+```ts
+class Animal {
+  name: string;
+  constructor(theName: string) {
+    this.name = theName;
+  }
+  move(distanceInMeters: number = 0) {
+    console.log(this.name + ' moved ' + distanceInMeters + 'm.');
+  } 
+}
+class Snake extends Animal {
+  constructor(name: string) {
+    super(name); // 调用父类的构造函数 
+  }
+  move(distanceInMeters = 5) {
+    console.log("Slithering...");
+    super.move(distanceInMeters);
+  } 
+}
+let sam = new Snake("Sammy the Python");
+sam.move();
+```
+
+### 9.5 抽象类
+
+使用 `abstract` 关键字声明的类，我们称之为抽象类。抽象类不能被实例化，因为它里面包含一个或多
+个抽象方法。所谓的抽象方法，是指不包含具体实现的方法:
+
+```ts
+ 
+abstract class Person {
+  constructor(public name: string) {}
+  abstract say(words: string) :void;
+}
+// Cannot create an instance of an abstract class.(2511)
+const lolo = new Person(); // Error
+```
+
+抽象类不能被直接实例化，我们只能实现所有抽象方法的子类。具体如下所示:
+
+```ts
+abstract class Person {
+  constructor(public name: string){}
+  // 抽象方法
+  abstract say(words: string) :void;
+}
+class Developer extends Person {
+  constructor(name: string) {
+    super(name);
+  }
+  say(words: string): void {
+    console.log(this.name + 'says' + words);
+  } 
+}
+const lolo = new Developer("lolo");
+lolo.say("I love ts!"); // lolo says I love ts!
+```
+
 
 ## 十、TypeScript 泛型
 
+设计泛型的关键目的是在成员之间提供有意义的约束，这些成员可以是:类的实例成员、类的方法、函
+数参数和函数返回值。
+泛型(Generics)是允许同一个函数接受不同类型参数的一种模板。相比于使用 any 类型，使用泛型来创建可复用的组件要更好，因为泛型会保留参数类型。
+
+### 10.1 泛型语法
+
+对于刚接触 TypeScript 泛型的读者来说，首次看到 `<T>` 语法会感到陌生。其实它没有什么特别，就像传递参数一样，我们传递了我们想要用于特定函数调用的类型。
+
+<img width="753" alt="image" style="margin: 20px auto;display: block;" src="https://user-images.githubusercontent.com/40552704/178439009-0c859198-15b0-47b0-8a26-eb99a2e98647.png">
+
+参考上面的图片，当我们调用 `identity<Number>(1)` ， `Number` 类型就像参数 `1` 一样，它将在出现 `T` 的任何位置填充该类型。图中 `<T>` 内部的 `T` 被称为类型变量，它是我们希望传递给 `identity` 函数的
+类型占位符，同时它被分配给 `value` 参数用来代替它的类型:此时 `T` 充当的是类型，而不是特定的 `Number` 类型。
+
+其实并不是只能定义一个类型变量，我们可以引入希望定义的任何数量的类型变量。比如我们引入一个 新的类型变量 `U` ，用于扩展我们定义的 identity 函数:
+
+```ts
+function identity <T, U>(value: T, message: U) : T {
+  console.log(message);
+  return value;
+}
+console.log(identity<Number, string>(68, "Semlinker"));
+```
+
+<img width="718" alt="image" style="margin: 20px auto;display: block;" src="https://user-images.githubusercontent.com/40552704/178439571-06724612-2635-429a-8fbd-c40e70fbd93f.png">
+
+除了为类型变量显式设定值之外，一种更常⻅的做法是使编译器自动选择这些类型，从而使代码更简
+洁。我们可以完全省略尖括号，比如:
+
+```ts
+function identity <T, U>(value: T, message: U) : T {
+  console.log(message);
+  return value;
+}
+console.log(identity(68, "Semlinker"));
+```
+
+对于上述代码，编译器足够聪明，能够知道我们的参数类型，并将它们赋值给 `T` 和 `U`，而不需要显式指定它们。
+
+### 10.2 泛型接口
+
+```ts
+interface GenericIdentityFn<T> {
+  (arg: T): T;
+}
+```
+
+### 10.3 泛型类
+
+```ts
+class GenericNumber<T> {
+  zeroValue: T;
+  add: (x: T, y: T) => T;
+}
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function (x, y) {
+  return x + y;
+};
+```
+
+### 10.4 泛型工具类型
+
+为了方便开发者 TypeScript 内置了一些常用的工具类型，比如 `Partial`、`Required`、`Readonly`、`Record` 和 `ReturnType` 等。这里只简单介绍 `Partial` 工具类型。这里先介绍一些相关的基础知识，方便学习其它的工具类型。
+
+**1.typeof**
+
+在 TypeScript 中， `typeof` 操作符可以用来获取一个变量声明或对象的类型。
+
+```ts
+interface Person {
+  name: string;
+  age: number;
+}
+const sem: Person = { name: 'semlinker', age: 33 };
+type Sem = typeof sem; // -> Person
+function toArray(x: number): Array<number> {
+  return [x];
+}
+type Func = typeof toArray; // -> (x: number) => number[]
+```
+
+**2.keyof**
+
+`keyof` 操作符是在 TypeScript 2.1 版本引入的，该操作符可以用于获取某种类型的所有键，其返回类型是联合类型。
+
+```ts
+interface Person {
+  name: string;
+  age: number;
+}
+type K1 = keyof Person; // "name" | "age"
+type K2 = keyof Person[]; // "length" | "toString" | "pop" | "push" | "concat" | "join"
+type K3 = keyof { [x: string]: Person };  // string | number
+type K4 = keyof any;  // string | number | symbol
+type K5 = keyof unknown;  // never
+```
+
+在 TypeScript 中支持两种索引签名，数字索引和字符串索引:
+
+```ts
+interface StringArray {
+  // 字符串索引
+  [index: string]: string;
+}
+interface StringArray1 {
+  // 数字索引
+  [index: number]: string;
+}
+type K6 = keyof StringArray; // string | number 
+type K7 = keyof StringArray1; // number 
+```
+
+**3.in**
+
+`in` 用来遍历枚举类型:
+
+```ts
+type Keys = "a" | "b" | "c"
+type Obj = {
+  [p in Keys]: any
+} // -> { a: any, b: any, c: any }
+```
+
+**4.infer**
+
+在条件类型语句中，可以用 `infer` 声明一个类型变量并且对它进行使用。
+
+```ts
+type ReturnType<T> = T extends (
+  ...args: any[]
+) => infer R ? R : any;
+```
+
+以上代码中 `infer R` 就是声明一个变量来承载传入函数签名的返回值类型，简单说就是用它取到函数返回值的类型方便之后使用。
+
+**5.extends**
+
+有时候我们定义的泛型不想过于灵活或者说想继承某些类等，可以通过 `extends` 关键字添加泛型约束。
+
+```ts
+interface Lengthwise {
+  length: number;
+}
+function loggingIdentity<T extends Lengthwise>(arg: T): T {
+  console.log(arg.length);
+  return arg;
+}
+```
+
+现在这个泛型函数被定义了约束，因此它不再是适用于任意类型:
+
+```ts
+loggingIdentity(3); // Error, number doesn't have a .length property 
+```
+
+这时我们需要传入符合约束类型的值，必须包含必须的属性:
+
+```ts
+loggingIdentity({length: 10, value: 3});
+```
+
+**6.Partial**
+
+`Partial<T>` 的作用就是将某个类型里的属性全部变为可选项 `?` 。 
+
+**定义:**
+
+```ts
+/**
+ * node_modules/typescript/lib/lib.es5.d.ts
+ * Make all properties in T optional
+ */
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+```
+
+在以上代码中，首先通过 `keyof T` 拿到 `T` 的所有属性名，然后使用 `in` 进行遍历，将值赋给 `P` ，最 后通过 `T[P]` 取得相应的属性值。中间的 `?` 号，用于将所有属性变为可选。
+
+**示例:**
+
+```ts
+interface Todo {
+  title: string;
+  description: string;
+}
+ 
+function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
+  return { ...todo, ...fieldsToUpdate };
+}
+const todo1 = {
+  title: "Learn TS",
+  description: "Learn TypeScript",
+};
+const todo2 = updateTodo(todo1, {
+  description: "Learn TypeScript Enum",
+});
+```
+
+在上面的 `updateTodo` 方法中，我们利用 `Partial<T>` 工具类型，定义 `fieldsToUpdate` 的类型为 `Partial<Todo>` ，即:
+ 
+```ts
+{
+   title?: string | undefined;
+   description?: string | undefined;
+}
+```
+
+
+
+
 ## 十一、TypeScript 装饰器
+
+## 十二、TypeScript 4.0 新特性
+
+## 十三、编译上下文
 
 
 
