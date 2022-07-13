@@ -45,3 +45,12 @@
   background-color: rgba(240, 240, 240, 1);
   transition: all .3s;
 }
+
+.fullScreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: #ccc;
+}
