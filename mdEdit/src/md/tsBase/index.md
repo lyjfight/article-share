@@ -137,13 +137,6 @@ var Enum;
 })(Enum || (Enum = {}));
 ```
 
-通过观察上述生成的 ES5 代码，我们可以发现数字枚举相对字符串枚举多了 “反向映射”:
-
-```ts
-console.log(Enum.A) //输出:0 
-console.log(Enum[0]) // 输出:A
-```
-
 ### 2.7 Any 类型
 
 在 TypeScript 中，任何类型都可以被归为 any 类型。这让 any 类型成为了类型系统的顶级类型(也被称作全局超级类型)。
@@ -154,7 +147,7 @@ notSure = "semlinker";
 notSure = false;
 ```
 
-`any` 类型本质上是类型系统的一个逃逸舱。作为开发者，这给了我们很大的自由:`TypeScript` 允许我们对 `any` 类型的值执行任何操作，而无需事先执行任何形式的检查。比如:
+`TypeScript` 允许我们对 `any` 类型的值执行任何操作，而无需事先执行任何形式的检查。比如:
 
 ```ts
 let value: any;
@@ -165,11 +158,11 @@ new value(); // OK
 value[0][1]; // OK
 ```
 
-在许多场景下，这太宽松了。使用 `any` 类型，可以很容易地编写类型正确但在运行时有问题的代码。如 果我们使用 `any` 类型，就无法使用 `TypeScript` 提供的大量的保护机制。为了解决 `any` 带来的问题， TypeScript 3.0 引入了 `unknown` 类型。
+在许多场景下，这太宽松了。使用 `any` 类型，可以很容易地编写类型正确但在运行时有问题的代码。如果我们使用 `any` 类型，就无法使用 `TypeScript` 提供的大量的保护机制。为了解决 `any` 带来的问题， TypeScript 3.0 引入了 `unknown` 类型。
 
 ### 2.8 Unknown 类型
 
-就像所有类型都可以赋值给 `any` ，所有类型也都可以赋值给 `unknown` 。这使得 `unknown` 成为 `TypeScript` 类型系统的另一种顶级类型(另一种是 any )。下面我们来看一下 unknown 类型的使用示 例:
+就像所有类型都可以赋值给 `any` ，所有类型也都可以赋值给 `unknown` 。这使得 `unknown` 成为 `TypeScript` 类型系统的另一种顶级类型(另一种是 any ):
 
 ```ts
 let value: unknown;
@@ -185,7 +178,7 @@ value = new TypeError(); // OK
 value = Symbol("type"); // OK
 ```
 
-对 `value` 变量的所有赋值都被认为是类型正确的。但是，当我们尝试将类型为 `unknown` 的值赋值给其 他类型的变量时会发生什么?
+对 `value` 变量的所有赋值都被认为是类型正确的。但是，如果尝试将类型为 `unknown` 的值赋值给其他类型的变量时会发生问题
 
 ```ts
 let value: unknown;
@@ -212,7 +205,7 @@ new value(); // Error
 value[0][1]; // Error
 ```
 
-将 `value` 变量类型设置为 `unknown` 后，这些操作都不再被认为是类型正确的。通过将 `any` 类型改变 为 `unknown` 类型，我们已将允许所有更改的默认设置，更改为禁止任何更改
+将 `value` 变量类型设置为 `unknown` 后，这些操作都不再被认为是类型正确的。
 
 
 ### 2.9 Tuple 类型
@@ -220,7 +213,7 @@ value[0][1]; // Error
 **众所周知，数组一般由同种类型的值组成，但有时我们需要在单个变量中存储不同类型的值，这时候我们就可以使用元组。** 在 `JavaScript` 中是没有元组的，元组是 `TypeScript` 中特有的类型，其工作方式类似于数组。
 
 元组可用于定义具有有限数量的未命名属性的类型。每个属性都有一个关联的类型。使用元组时，必须
-提供每个属性的值。为了更直观地理解元组的概念，我们来看一个具体的例子:
+提供每个属性的值:
 
 ```ts
 let tupleType: [string, boolean];
