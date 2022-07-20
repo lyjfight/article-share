@@ -489,6 +489,21 @@ if (padder instanceof SpaceRepeatingPadder) { // padder的类型收窄为 'Space
 }
 ```
 
+### 4.4 自定义类型保护的类型谓词
+
+```ts
+function isNumber(x: any): x is number {
+  return typeof x === "number";
+}
+function outNumberFn(a: any) {
+  if (isNumber(a)) {
+    return a.toFixed(2)
+  } else {
+    return a
+  }
+}
+```
+
 ## 五、联合类型和类型别名
 
 ### 5.1 联合类型
@@ -1119,13 +1134,6 @@ const todo2 = updateTodo(todo1, {
 ```
 
 
-
-
-## 十一、TypeScript 装饰器
-
-## 十二、TypeScript 4.0 新特性
-
-## 十三、编译上下文
 
 
 
