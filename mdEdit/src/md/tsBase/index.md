@@ -469,23 +469,33 @@ function padLeft(value: string, padding: string | number) {
 ### 4.3 instanceof 关键字
 
 ```ts
-interface Padder {
-  getPaddingString(): string;
+interface Animal {
+  cry(): string;
 }
-class SpaceRepeatingPadder implements Padder {
+class Duck implements Animal {
   constructor(private numSpaces: number) {}
-  getPaddingString() {
+  cry() {
     return Array(this.numSpaces + 1).join(" ");
   }
-}
-class StringPadder implements Padder {
-  constructor(private value: string) {}
-  getPaddingString() {
-    return this.value;
+  swim() {
+
   }
 }
-let padder: Padder = new SpaceRepeatingPadder(6);
-if (padder instanceof SpaceRepeatingPadder) { // padder的类型收窄为 'SpaceRepeatingPadder'
+class Dog implements Padder {
+  constructor(private value: string) {}
+  cry() {
+    return this.value;
+  }
+  run() {
+
+  }
+}
+let animal: Animal = new Duck(6);
+
+animal.swim()  // error
+
+if (animal instanceof Duck) { // ok
+  animal.swim()
 }
 ```
 
@@ -577,7 +587,6 @@ function createUserId(name = "semlinker", id: number, age?: number): string {
 
 ## 八、TypeScript 接口
 
-在面向对象语言中，接口是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类去实现。
 TypeScript 中的接口是一个非常灵活的概念，除了可用于对类的一部分行为进行抽象以外，也常用于对 「对象的形状(Shape)」进行描述。
 
 ### 8.1 对象的形状
@@ -663,9 +672,6 @@ type Data = [number, string];
 
 **3.Extend**
 
-接口和类型别名都能够被扩展，但语法有所不同。此外，接口和类型别名不是互斥的。接口可以扩展类
-型别名，而反过来是不行的。
-
 **Interface extends interface**
 
 ```ts
@@ -675,13 +681,6 @@ interface Point extends PartialPointX {
 }
 ```
 
-**Type alias extends type alias**
-
-```ts
-type PartialPointX = { x: number; };
-type Point = PartialPointX & { y: number; };
-```
-
 **Interface extends type alias**
 
 ```ts
@@ -689,41 +688,24 @@ type PartialPointX = { x: number; };
 interface Point extends PartialPointX { y: number; }
 ```
 
-**Type alias extends interface**
+接口可以继承类型别名，而反过来是不行的。
 
-```ts
-interface PartialPointX { x: number; }
-type Point = PartialPointX & { y: number; };
-```
 
 **4.Implements**
 
-类可以以相同的方式实现接口或类型别名，但类不能实现使用类型别名定义的联合类型:
+类可以以相同的方式实现接口或类型别名
 
 ```ts
 interface Point {
   x: number;
   y: number;
- 
+  say(a: string): void;
 }
 class SomePoint implements Point {
   x = 1;
   y = 2; 
-}
-type Point2 = {
-  x: number;
-  y: number;
-};
-class SomePoint2 implements Point2 {
-  x = 1;
-  y = 2; 
-}
-type PartialPoint = { x: number; } | { y: number; };
-// A class can only implement an object type or
-// intersection of object types with statically known members.
-class SomePartialPoint implements PartialPoint { // Error
-  x = 1;
-  y = 2; 
+  say(a: string) {
+  }
 }
 ```
 
@@ -857,11 +839,6 @@ console.log(employee.fullName);
 
 ### 9.4 类的继承
 
-继承(Inheritance)是一种联结类与类的层次模型。指的是一个类(称为子类、子接口)继承另外的一个类(称为父类、父接口)的功能，并可以增加它自己的新功能的能力，继承是类与类或者接口与接口之间最常⻅的关系。
-继承是一种 is-a 关系:
-
-<img width="472" alt="image" style="margin: 20px auto;display: block;" src="https://user-images.githubusercontent.com/40552704/178437878-784762f9-cf07-484c-be28-140964a20bd8.png">
-
 在 TypeScript 中，我们可以通过 `extends` 关键字来实现继承:
 
 ```ts
@@ -925,30 +902,17 @@ lolo.say("I love ts!"); // lolo says I love ts!
 
 ## 十、TypeScript 泛型
 
-设计泛型的关键目的是在成员之间提供有意义的约束，这些成员可以是:类的实例成员、类的方法、函
-数参数和函数返回值。
 泛型(Generics)是允许同一个函数接受不同类型参数的一种模板。相比于使用 any 类型，使用泛型来创建可复用的组件要更好，因为泛型会保留参数类型。
 
 ### 10.1 泛型语法
-
-对于刚接触 TypeScript 泛型的读者来说，首次看到 `<T>` 语法会感到陌生。其实它没有什么特别，就像传递参数一样，我们传递了我们想要用于特定函数调用的类型。
-
-<img width="753" alt="image" style="margin: 20px auto;display: block;" src="https://user-images.githubusercontent.com/40552704/178439009-0c859198-15b0-47b0-8a26-eb99a2e98647.png">
-
-参考上面的图片，当我们调用 `identity<Number>(1)` ， `Number` 类型就像参数 `1` 一样，它将在出现 `T` 的任何位置填充该类型。图中 `<T>` 内部的 `T` 被称为类型变量，它是我们希望传递给 `identity` 函数的
-类型占位符，同时它被分配给 `value` 参数用来代替它的类型:此时 `T` 充当的是类型，而不是特定的 `Number` 类型。
-
-其实并不是只能定义一个类型变量，我们可以引入希望定义的任何数量的类型变量。比如我们引入一个 新的类型变量 `U` ，用于扩展我们定义的 identity 函数:
 
 ```ts
 function identity <T, U>(value: T, message: U) : T {
   console.log(message);
   return value;
 }
-console.log(identity<Number, string>(68, "Semlinker"));
+console.log(identity<number, string>(68, "Semlinker"));
 ```
-
-<img width="718" alt="image" style="margin: 20px auto;display: block;" src="https://user-images.githubusercontent.com/40552704/178439571-06724612-2635-429a-8fbd-c40e70fbd93f.png">
 
 除了为类型变量显式设定值之外，一种更常⻅的做法是使编译器自动选择这些类型，从而使代码更简
 洁。我们可以完全省略尖括号，比如:
@@ -960,8 +924,6 @@ function identity <T, U>(value: T, message: U) : T {
 }
 console.log(identity(68, "Semlinker"));
 ```
-
-对于上述代码，编译器足够聪明，能够知道我们的参数类型，并将它们赋值给 `T` 和 `U`，而不需要显式指定它们。
 
 ### 10.2 泛型接口
 
@@ -987,7 +949,7 @@ myGenericNumber.add = function (x, y) {
 
 ### 10.4 泛型工具类型
 
-为了方便开发者 TypeScript 内置了一些常用的工具类型，比如 `Partial`、`Required`、`Readonly`、`Record` 和 `ReturnType` 等。这里只简单介绍 `Partial` 工具类型。这里先介绍一些相关的基础知识，方便学习其它的工具类型。
+为了方便开发者 TypeScript 内置了一些常用的工具类型，比如 `Partial`、`Required`、`Readonly`、`Record` 和 `ReturnType` 等。这里只简单介绍 `Partial` 工具类型。
 
 **1.typeof**
 
@@ -1053,9 +1015,8 @@ type Obj = {
 在条件类型语句中，可以用 `infer` 声明一个类型变量并且对它进行使用。
 
 ```ts
-type ReturnType<T> = T extends (
-  ...args: any[]
-) => infer R ? R : any;
+type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
+type return1 = ReturnType1<() => number>  // number
 ```
 
 以上代码中 `infer R` 就是声明一个变量来承载传入函数签名的返回值类型，简单说就是用它取到函数返回值的类型方便之后使用。
@@ -1093,16 +1054,10 @@ loggingIdentity({length: 10, value: 3});
 **定义:**
 
 ```ts
-/**
- * node_modules/typescript/lib/lib.es5.d.ts
- * Make all properties in T optional
- */
 type Partial<T> = {
   [P in keyof T]?: T[P];
 };
 ```
-
-在以上代码中，首先通过 `keyof T` 拿到 `T` 的所有属性名，然后使用 `in` 进行遍历，将值赋给 `P` ，最 后通过 `T[P]` 取得相应的属性值。中间的 `?` 号，用于将所有属性变为可选。
 
 **示例:**
 
@@ -1111,25 +1066,14 @@ interface Todo {
   title: string;
   description: string;
 }
- 
-function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
-  return { ...todo, ...fieldsToUpdate };
-}
-const todo1 = {
-  title: "Learn TS",
-  description: "Learn TypeScript",
-};
-const todo2 = updateTodo(todo1, {
-  description: "Learn TypeScript Enum",
-});
-```
 
-在上面的 `updateTodo` 方法中，我们利用 `Partial<T>` 工具类型，定义 `fieldsToUpdate` 的类型为 `Partial<Todo>` ，即:
+type p = Partial<Todo>
+```
  
 ```ts
-{
-   title?: string | undefined;
-   description?: string | undefined;
+type p = {
+   title?: string;
+   description?: string;
 }
 ```
 
