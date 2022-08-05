@@ -427,6 +427,8 @@ function initialize() {
 
 **类型保护是可执行运行时检查的一种表达式，用于确保该类型在一定的范围内。** 
 
+目前主要有四种的方式来实现类型保护:
+
 ### 4.1 in 关键字
 
 ```ts
@@ -461,6 +463,54 @@ function padLeft(value: string, padding: string | number) {
       return padding + value;
   }
   throw new Error('Expected string or number, got ' + padding + '.');
+}
+```
+
+### 4.3 instanceof 关键字
+
+```ts
+interface Animal {
+  cry(): string;
+}
+class Duck implements Animal {
+  constructor(private numSpaces: number) {}
+  cry() {
+    return Array(this.numSpaces + 1).join(" ");
+  }
+  swim() {
+
+  }
+}
+class Dog implements Padder {
+  constructor(private value: string) {}
+  cry() {
+    return this.value;
+  }
+  run() {
+
+  }
+}
+let animal: Animal = new Duck(6);
+
+animal.swim()  // error
+
+if (animal instanceof Duck) { // ok
+  animal.swim()
+}
+```
+
+### 4.4 自定义类型保护的类型谓词
+
+```ts
+function isNumber(x: any): x is number {
+  return typeof x === "number";
+}
+function outNumberFn(a: any) {
+  if (isNumber(a)) {
+    return a.toFixed(2)
+  } else {
+    return a
+  }
 }
 ```
 
@@ -576,8 +626,281 @@ const p2 = { name: "lolo", age: 5 };
 const p3 = { name: "kakuqo", sex: 1 }
 ```
 
+### 8.4 接口与类型别名的区别
 
-## 九、TypeScript 泛型
+**1.Objects/Functions**
+
+接口和类型别名都可以用来描述对象的形状或函数签名:
+
+**接口**
+
+```ts
+interface Point {
+  x: number;
+  y: number;
+}
+interface SetPoint {
+  (x: number, y: number): void;
+}
+```
+
+**类型别名**
+
+```ts
+type Point = {
+  x: number;
+  y: number;
+};
+type SetPoint = (x: number, y: number) => void;
+```
+
+**2.Other Types**
+
+与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组:
+
+```ts
+// primitive
+type Name = string;
+// object
+type PartialPointX = { x: number; };
+type PartialPointY = { y: number; };
+// union
+type PartialPoint = PartialPointX | PartialPointY;
+// tuple
+type Data = [number, string];
+```
+
+**3.Extend**
+
+**Interface extends interface**
+
+```ts
+interface PartialPointX { x: number; }
+interface Point extends PartialPointX {
+  y: number; 
+}
+```
+
+**Interface extends type alias**
+
+```ts
+type PartialPointX = { x: number; };
+interface Point extends PartialPointX { y: number; }
+```
+
+接口可以继承类型别名，而反过来是不行的。
+
+
+**4.Implements**
+
+类可以以相同的方式实现接口或类型别名
+
+```ts
+interface Point {
+  x: number;
+  y: number;
+  say(a: string): void;
+}
+class SomePoint implements Point {
+  x = 1;
+  y = 2; 
+  say(a: string) {
+  }
+}
+```
+
+**5.Declaration merging**
+
+与类型别名不同，接口可以定义多次，会被自动合并为单个接口。
+
+```ts
+interface Point { x: number; }
+interface Point { y: number; }
+const point: Point = { x: 1, y: 2 };
+```
+
+
+## 九、TypeScript 类
+
+### 9.1 类的属性与方法
+
+在 TypeScript 中，我们可以通过 `Class` 关键字来定义一个类:
+
+```ts
+class Greeter {
+  // 静态属性
+  static cname: string = "Greeter"; 
+  // 成员属性
+  greeting: string;
+ 
+  // 构造函数 - 执行初始化操作 
+  constructor(message: string) {
+    this.greeting = message;
+  }
+  // 静态方法
+  static getClassName() {
+    return "Class name is Greeter";
+  }
+  // 成员方法 
+  greet() {
+    return "Hello, " + this.greeting;
+  }
+}
+let greeter = new Greeter("world");
+```
+
+那么成员属性与静态属性，成员方法与静态方法有什么区别:
+
+```js
+"use strict";
+var Greeter = /** @class */ (function () {
+  // 构造函数 - 执行初始化操作 
+  function Greeter(message) {
+    this.greeting = message;
+  }
+  // 静态方法
+  Greeter.getClassName = function () {
+    return "Class name is Greeter";
+  };
+  // 成员方法
+  Greeter.prototype.greet = function () {
+    return "Hello, " + this.greeting;
+  };
+  // 静态属性
+  Greeter.cname = "Greeter"; 
+  return Greeter;
+}());
+var greeter = new Greeter("world");
+```
+
+### 9.2 成员修饰符
+
+Typescript中成员修饰符包含 `public` 、`private` 、`protected`
+
+`public` 定义类的变量默认就是公共的，继承的子类可以通过this来访问
+
+`private` 定义类的私有属性，只能在内部访问
+
+```ts
+class Person {
+  private name: string = ""
+  getName() {
+    return this.name
+  }
+
+  setName(newName) {
+    this.name = newName
+  }
+}
+const p = new Person()
+console.log(p.getName())
+p.setName('xbj')
+console.log(p.name) // Property 'name' is private and only accessible within class 'Person'.
+```
+
+`protected` 在类的内部和子类中可以访问,在外面就访问不到了
+
+```ts
+class Person {
+  protected name: string
+  constructor(name: string) {
+    this.name = name
+  }
+}
+
+class Student extends Person {
+  constructor(name: string, age: number){
+    super(name)
+  }
+  getName() {
+    return this.name
+  }
+}
+```
+
+### 9.3 访问器
+
+在 TypeScript 中，我们可以通过 `getter` 和 `setter` 方法来实现数据的封装和有效性校验，防止出现异常数据。
+
+```ts
+class Employee {
+  private _fullName: string;
+  get fullName(): string {
+    return this._fullName;
+  }
+  set fullName(newName: string) {
+    this._fullName = newName;
+  } 
+}
+let employee = new Employee();
+employee.fullName = "Semlinker";
+console.log(employee.fullName);
+```
+
+### 9.4 类的继承
+
+在 TypeScript 中，我们可以通过 `extends` 关键字来实现继承:
+
+```ts
+class Animal {
+  name: string;
+  constructor(theName: string) {
+    this.name = theName;
+  }
+  move(distanceInMeters: number = 0) {
+    console.log(this.name + ' moved ' + distanceInMeters + 'm.');
+  } 
+}
+class Snake extends Animal {
+  constructor(name: string) {
+    super(name); // 调用父类的构造函数 
+  }
+  move(distanceInMeters = 5) {
+    console.log("Slithering...");
+    super.move(distanceInMeters);
+  } 
+}
+let sam = new Snake("Sammy the Python");
+sam.move();
+```
+
+### 9.5 抽象类
+
+使用 `abstract` 关键字声明的类，我们称之为抽象类。抽象类不能被实例化，因为它里面包含一个或多
+个抽象方法。所谓的抽象方法，是指不包含具体实现的方法:
+
+```ts
+ 
+abstract class Person {
+  constructor(public name: string) {}
+  abstract say(words: string) :void;
+}
+// Cannot create an instance of an abstract class.(2511)
+const lolo = new Person(); // Error
+```
+
+抽象类不能被直接实例化，我们只能实现所有抽象方法的子类。具体如下所示:
+
+```ts
+abstract class Person {
+  constructor(public name: string){}
+  // 抽象方法
+  abstract say(words: string) :void;
+}
+class Developer extends Person {
+  constructor(name: string) {
+    super(name);
+  }
+  say(words: string): void {
+    console.log(this.name + 'says' + words);
+  } 
+}
+const lolo = new Developer("lolo");
+lolo.say("I love ts!"); // lolo says I love ts!
+```
+
+
+## 十、TypeScript 泛型
 
 泛型(Generics)是允许同一个函数接受不同类型参数的一种模板。相比于使用 any 类型，使用泛型来创建可复用的组件要更好，因为泛型会保留参数类型。
 
@@ -591,6 +914,17 @@ function identity <T, U>(value: T, message: U) : T {
 console.log(identity<number, string>(68, "Semlinker"));
 ```
 
+除了为类型变量显式设定值之外，一种更常⻅的做法是使编译器自动选择这些类型，从而使代码更简
+洁。我们可以完全省略尖括号，比如:
+
+```ts
+function identity <T, U>(value: T, message: U) : T {
+  console.log(message);
+  return value;
+}
+console.log(identity(68, "Semlinker"));
+```
+
 ### 10.2 泛型接口
 
 ```ts
@@ -599,7 +933,21 @@ interface GenericIdentityFn<T> {
 }
 ```
 
-### 10.3 泛型工具类型
+### 10.3 泛型类
+
+```ts
+class GenericNumber<T> {
+  zeroValue: T;
+  add: (x: T, y: T) => T;
+}
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function (x, y) {
+  return x + y;
+};
+```
+
+### 10.4 泛型工具类型
 
 为了方便开发者 TypeScript 内置了一些常用的工具类型，比如 `Partial`、`Required`、`Readonly`、`Record` 和 `ReturnType` 等。这里只简单介绍 `Partial` 工具类型。
 
