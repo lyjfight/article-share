@@ -4,4 +4,5 @@
 
 - **`sourceMap`**
 - **`tsBase`**
+- **`babel`**
 - **`other`**
